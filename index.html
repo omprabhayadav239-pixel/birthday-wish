@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday My Love! ❤️ | A Special Surprise For You</title>
+  <meta name="description" content="An interactive birthday wish experience made with all my love for the best boyfriend in the universe!">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Outfit:wght@300;400;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,600;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="locked">
+
+  <!-- Background Animated Particles & Glows -->
+  <canvas id="starCanvas"></canvas>
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <!-- FLOATING AUDIO CONTROLS & VIDEO TOUR BUTTON -->
+  <div class="fixed-floating-bar" id="floatingBar">
+    <button class="glass-pill-btn" id="musicToggleBtn" title="Toggle Romantic Music">
+      <span class="music-icon" id="musicIcon">🎵</span>
+      <span class="music-label">Music: <strong id="musicStatus">OFF</strong></span>
+      <div class="sound-wave" id="soundWave">
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </button>
+
+    <button class="glass-pill-btn tour-btn" id="videoTourBtn" title="Play as an automatic romantic video story">
+      <span class="tour-icon">🎬</span>
+      <span id="tourBtnText">Play as Video Story</span>
+    </button>
+  </div>
+
+  <!-- INTRO POPUP GATE: YES / NO VERIFICATION + 3 2 1 COUNTDOWN -->
+  <div class="intro-gate-overlay" id="introGateOverlay">
+    <div class="intro-card glass-panel" id="introCard">
+      <div class="sparkle-badge">✨ TOP SECRET BIRTHDAY SURPRISE ✨</div>
+      <div class="floating-emoji">🎂💝</div>
+      <h2 class="intro-title">Wait a second, mister!</h2>
+      <p class="intro-subtitle">
+        Are you ready to see what your girl made for the most handsome, kindest, and sweetest boyfriend in the entire world?
+      </p>
+
+      <div class="intro-btn-group" id="btnGroup">
+        <button class="btn-primary-glow" id="yesBtn">
+          <span>YES! Show Me! 🥰</span>
+        </button>
+        <button class="btn-secondary-runaway" id="noBtn">
+          <span>No 😜</span>
+        </button>
+      </div>
+
+      <div class="runaway-hint" id="runawayHint">Psst... you really thought you could click "No"? Not a chance! 💕</div>
+    </div>
+
+    <!-- INTERACTIVE COUNTDOWN DASHBOARD (Triggered when Yes is clicked) -->
+    <div class="countdown-container hidden" id="countdownContainer">
+      <!-- Floating interactive poppable items arena -->
+      <div class="countdown-interactive-sky" id="countdownSky"></div>
+
+      <div class="countdown-glass-card glass-panel" id="countdownCard">
+        <div class="countdown-sparkles">✨ 🎂 ✨</div>
+        <div class="countdown-status-badge" id="countdownStatusBadge">STAGE 1: CALIBRATING BOYFRIEND CUTENESS</div>
+        
+        <!-- Interactive Glowing SVG Progress Ring -->
+        <div class="countdown-dial-wrap">
+          <svg class="countdown-ring-svg" width="220" height="220" viewBox="0 0 220 220">
+            <circle class="ring-bg" cx="110" cy="110" r="95"></circle>
+            <circle class="ring-fill" id="ringFillCircle" cx="110" cy="110" r="95"></circle>
+          </svg>
+          <div class="countdown-number-inner">
+            <span class="countdown-number" id="countdownNumber">3</span>
+          </div>
+        </div>
+
+        <div class="countdown-text" id="countdownText">Calibrating charm levels... Result: 100/10! 📈💖</div>
+
+        <!-- Interactive Love Booster Meter & Button -->
+        <div class="countdown-booster-box">
+          <div class="booster-meter-label">
+            <span>Birthday Energy Meter</span>
+            <strong id="energyPercent">33%</strong>
+          </div>
+          <div class="booster-meter-track">
+            <div class="booster-meter-fill" id="boosterFill" style="width: 33%;"></div>
+          </div>
+          <button class="btn-tap-heart-boost" id="boostHeartBtn" title="Click to send love and boost the countdown!">
+            <span class="boost-icon">💖</span>
+            <span class="boost-label">Tap to Boost Love! (<strong id="boostCount">0</strong> sent)</span>
+          </button>
+          <div class="sky-hint">🎈 Tip: You can also tap floating hearts & balloons to pop them!</div>
+        </div>
+
+        <!-- Interactive Unwrap Box (Appears at 0) -->
+        <div class="unwrap-stage hidden" id="unwrapStage">
+          <div class="shaking-gift-box" id="shakingGiftBox">🎁</div>
+          <h3 class="unwrap-title">SURPRISE UNLOCKED!</h3>
+          <p class="unwrap-desc">Ready for your birthday website, handsome?</p>
+          <button class="btn-primary-glow btn-unwrap-big" id="unwrapBigBtn">
+            <span>✨ TAP TO OPEN YOUR SURPRISE! ✨</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN SCROLLABLE WEBSITE CONTENT (Unlocked after countdown) -->
+  <div class="main-wrapper" id="mainWrapper">
+
+    <!-- HERO SECTION: BOLD, LARGE TYPOGRAPHY & HIS SINGLE PHOTO -->
+    <header class="hero-section" id="heroSection">
+      <div class="hero-tagline">
+        <span class="pulse-dot"></span> CELEBRATING THE MOST SPECIAL HUMAN TODAY
+      </div>
+
+      <div class="hero-typography">
+        <h1 class="hero-headline">
+          <span class="text-gradient-gold">HAPPY BIRTHDAY</span>
+          <span class="text-glow-romantic">MY HANDSOME BOY!</span>
+        </h1>
+        <p class="hero-subhead">
+          To the boy who stole my heart, fills my days with laughter, and makes everything brighter. Today is all about YOU! 👑💖
+        </p>
+      </div>
+
+      <!-- SINGLE PHOTO SPOTLIGHT FRAME -->
+      <div class="hero-photo-spotlight">
+        <div class="photo-glow-ring"></div>
+        <div class="photo-frame-outer">
+          <div class="spotlight-crown">👑</div>
+          <img src="assets/images/single_birthday_boy.jpg" alt="The Handsome Birthday Boy" class="spotlight-photo" id="singleBoyPhoto">
+          <div class="photo-badge-label">
+            <span class="badge-icon">✨</span>
+            <span class="badge-text">The Birthday Boy & My Forever Favorite</span>
+          </div>
+        </div>
+
+        <div class="scroll-down-hint" id="scrollDownHint">
+          <span class="hint-text">Scroll down for your surprises</span>
+          <div class="mouse-icon">
+            <div class="wheel"></div>
+          </div>
+          <span class="down-arrow">↓</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- SECTION 1: OUR GOOFY & CRAZY MEMORY (COOL SUNGLASSES PHOTO) -->
+    <section class="story-section alternate-bg" id="sectionGoofy">
+      <div class="section-container">
+        <div class="section-header-tag">OUR SIGNATURE VIBE 😎🔥</div>
+        
+        <div class="story-split-grid">
+          <div class="story-image-wrap">
+            <div class="polaroid-card tilt-left">
+              <div class="tape-strip"></div>
+              <img src="assets/images/couple_sunglasses.jpg" alt="Our goofy swag moments" class="polaroid-img">
+              <div class="polaroid-caption">
+                <span class="caption-handwritten">Goofiest couple in town & proud of it! 🤪🕶️</span>
+                <span class="caption-tag">Partners in Crime</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="story-content-wrap">
+            <h2 class="section-title">My Favorite Partner In All The Madness</h2>
+            <p class="story-paragraph">
+              Life with you is never boring. Whether we're making silly faces, wearing oversized sunglasses, laughing at our inside jokes, or sharing delicious snacks & treats, you make every ordinary second feel extraordinary.
+            </p>
+            <div class="quote-card glass-panel">
+              <span class="quote-mark">“</span>
+              <p>They say find someone who matches your weirdness... I found someone who out-weirds me and makes me smile twice as wide!</p>
+            </div>
+            
+            <button class="interactive-envelope-btn" onclick="openWishModal('goofy')">
+              <span>💌 Click to open my birthday wish for you</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: SWEET WARMTH & CLOSE SMILE PHOTO -->
+    <section class="story-section" id="sectionSweet">
+      <div class="section-container">
+        <div class="section-header-tag">MY SAFEST COMFORT ZONE 🥺🤍</div>
+        
+        <div class="story-split-grid reverse-layout">
+          <div class="story-image-wrap">
+            <div class="polaroid-card tilt-right">
+              <div class="tape-strip tape-pink"></div>
+              <img src="assets/images/couple_sweet_smile.png" alt="Sweet romantic selfie together" class="polaroid-img">
+              <div class="polaroid-caption">
+                <span class="caption-handwritten">Your smile = my happiest place 🥹✨</span>
+                <span class="caption-tag">Pure Comfort</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="story-content-wrap">
+            <h2 class="section-title">Your Smile Warms My Entire Soul</h2>
+            <p class="story-paragraph">
+              Whenever the world feels chaotic or tiring, just looking at you smiling calms everything down. Thank you for being my anchor, my listener, my comfort person, and the gentlest heart I've ever known.
+            </p>
+
+            <div class="sweet-highlights-grid">
+              <div class="highlight-chip">
+                <span class="chip-emoji">🫂</span>
+                <span class="chip-text">Best warm hugs</span>
+              </div>
+              <div class="highlight-chip">
+                <span class="chip-emoji">🥰</span>
+                <span class="chip-text">Most loving eyes</span>
+              </div>
+              <div class="highlight-chip">
+                <span class="chip-emoji">🛡️</span>
+                <span class="chip-text">My safest haven</span>
+              </div>
+            </div>
+
+            <button class="interactive-envelope-btn" onclick="openWishModal('sweet')">
+              <span>💌 Click to open my warm heart wish</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: FOREVER CLINGY & KISSY FACE PHOTO -->
+    <section class="story-section alternate-bg" id="sectionClingy">
+      <div class="section-container">
+        <div class="section-header-tag">YOUR NUMBER 1 FAN 💋✨</div>
+        
+        <div class="story-split-grid">
+          <div class="story-image-wrap">
+            <div class="polaroid-card tilt-left-subtle">
+              <div class="tape-strip"></div>
+              <img src="assets/images/couple_kissy_glasses.png" alt="Couple selfie with kisses" class="polaroid-img">
+              <div class="polaroid-caption">
+                <span class="caption-handwritten">Officially obsessed with you forever 💋❤️</span>
+                <span class="caption-tag">Soulmates</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="story-content-wrap">
+            <h2 class="section-title">Can't Help Being Your Clingiest Girl!</h2>
+            <p class="story-paragraph">
+              You look way too cute in those glasses, and I take every opportunity to give you kisses and remind you how handsome you are. You're stuck with me forever, mister — no refunds, no returns, guaranteed for life!
+            </p>
+            <div class="stats-mini-bar glass-panel">
+              <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-desc">Girlfriend clinginess</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">∞</span>
+                <span class="stat-desc">Kisses owed to you</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">#1</span>
+                <span class="stat-desc">Handsome man on Earth</span>
+              </div>
+            </div>
+
+            <button class="interactive-envelope-btn" onclick="openWishModal('clingy')">
+              <span>💌 Click for your clingy girlfriend note</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE SECTION 4: POP-UP WISH ENVELOPES & LOVE COUPONS -->
+    <section class="interactive-wishes-section" id="wishesGallerySection">
+      <div class="section-container">
+        <div class="center-heading">
+          <span class="section-header-tag">POP-UP SURPRISES 🎁</span>
+          <h2 class="section-title-large">Tap Each Box to Reveal Secret Wishes & Gifts!</h2>
+          <p class="section-subtitle">I hid special messages, coupons, and promises inside these cute envelopes just for your birthday.</p>
+        </div>
+
+        <div class="wishes-card-grid">
+          <!-- Card 1 -->
+          <div class="wish-box-card glass-panel" onclick="openWishModal('coupon1')">
+            <div class="box-icon-bounce">🎟️</div>
+            <div class="box-badge">Boyfriend Coupon #1</div>
+            <h3>Unlimited Kisses & Cuddles</h3>
+            <p>Redeemable anytime, no expiration date!</p>
+            <span class="card-action-tap">Tap to Open Pop-up →</span>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="wish-box-card glass-panel" onclick="openWishModal('coupon2')">
+            <div class="box-icon-bounce">🍰</div>
+            <div class="box-badge">Boyfriend Coupon #2</div>
+            <h3>Favorite Cafe & Foodie Date</h3>
+            <p>Your favorite treats, all on me!</p>
+            <span class="card-action-tap">Tap to Open Pop-up →</span>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="wish-box-card glass-panel" onclick="openWishModal('coupon3')">
+            <div class="box-icon-bounce">🎮</div>
+            <div class="box-badge">Boyfriend Coupon #3</div>
+            <h3>Guilt-Free Gaming Pass</h3>
+            <p>Play with the boys all day, zero complaints!</p>
+            <span class="card-action-tap">Tap to Open Pop-up →</span>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="wish-box-card glass-panel" onclick="openWishModal('reasons')">
+            <div class="box-icon-bounce">💌</div>
+            <div class="box-badge">Special Letter</div>
+            <h3>5 Things I Adore About You</h3>
+            <p>Little reasons why you stole my heart.</p>
+            <span class="card-action-tap">Tap to Open Pop-up →</span>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="wish-box-card glass-panel" onclick="openWishModal('prayer')">
+            <div class="box-icon-bounce">🌟</div>
+            <div class="box-badge">Heartfelt Prayer</div>
+            <h3>My Birthday Wish for Your Year</h3>
+            <p>Health, massive success, and endless joy.</p>
+            <span class="card-action-tap">Tap to Open Pop-up →</span>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="wish-box-card glass-panel" onclick="openWishModal('future')">
+            <div class="box-icon-bounce">✈️</div>
+            <div class="box-badge">Our Bucket List</div>
+            <h3>Adventures Waiting For Us</h3>
+            <p>Road trips, new cities, and endless dreams.</p>
+            <span class="card-action-tap">Tap to Open Pop-up →</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: INTERACTIVE MINI GAMES -->
+    <section class="games-playground-section" id="gamesSection">
+      <div class="section-container">
+        <div class="center-heading">
+          <span class="section-header-tag">BIRTHDAY ARCADE 🎮🕹️</span>
+          <h2 class="section-title-large">Fun Mini Games For The Birthday Boy!</h2>
+          <p class="section-subtitle">Take a break, play these cute games, and collect your special love rewards!</p>
+        </div>
+
+        <!-- GAME TABS -->
+        <div class="game-nav-tabs">
+          <button class="game-tab-btn active" data-game="game-cake" onclick="switchGame('game-cake')">
+            🎂 Blow the Candles
+          </button>
+          <button class="game-tab-btn" data-game="game-catcher" onclick="switchGame('game-catcher')">
+            💖 Catch the Love
+          </button>
+          <button class="game-tab-btn" data-game="game-quiz" onclick="switchGame('game-quiz')">
+            🧠 Relationship Quiz
+          </button>
+          <button class="game-tab-btn" data-game="game-wheel" onclick="switchGame('game-wheel')">
+            🎡 Spin the Prize Wheel
+          </button>
+        </div>
+
+        <div class="games-container glass-panel">
+          
+          <!-- GAME 1: INTERACTIVE CAKE & BLOW CANDLES -->
+          <div class="game-view active" id="game-cake">
+            <div class="game-intro-text">
+              <h3>Make a Birthday Wish & Blow Out the Candles! 🎂🕯️</h3>
+              <p>Close your eyes, make the biggest wish for your new year, and click the button to blow out the flames!</p>
+            </div>
+
+            <div class="cake-stage" id="cakeStage">
+              <!-- Visual Virtual Cake -->
+              <div class="birthday-cake">
+                <div class="cake-candles-row" id="candlesRow">
+                  <div class="candle c-1 lit"><div class="flame"></div><div class="wick"></div></div>
+                  <div class="candle c-2 lit"><div class="flame"></div><div class="wick"></div></div>
+                  <div class="candle c-3 lit"><div class="flame"></div><div class="wick"></div></div>
+                  <div class="candle c-4 lit"><div class="flame"></div><div class="wick"></div></div>
+                  <div class="candle c-5 lit"><div class="flame"></div><div class="wick"></div></div>
+                </div>
+                <div class="cake-top-layer">
+                  <div class="frosting-drip"></div>
+                  <span class="cake-text-decor">★ HAPPY BIRTHDAY ★</span>
+                </div>
+                <div class="cake-mid-layer"></div>
+                <div class="cake-bottom-plate"></div>
+              </div>
+            </div>
+
+            <div class="cake-controls">
+              <button class="btn-blow-candles" id="blowCandlesBtn" onclick="blowCandlesAction()">
+                💨 Click to Blow Out the Candles!
+              </button>
+              <button class="btn-relight-candles hidden" id="relightCandlesBtn" onclick="relightCandlesAction()">
+                ✨ Relight & Wish Again!
+              </button>
+            </div>
+            <div class="cake-message hidden" id="cakeMessage">
+              🎉 WOOOHOO! May all your secret wishes come true today and always, my love! ❤️
+            </div>
+          </div>
+
+          <!-- GAME 2: CATCH THE LOVE ARCADE -->
+          <div class="game-view" id="game-catcher">
+            <div class="game-intro-text">
+              <h3>Catch Girlfriend's Love & Gifts! 🎈💖</h3>
+              <p>Hearts, gifts, and treats are floating up! Click as many as you can before time runs out!</p>
+            </div>
+
+            <div class="catcher-stats-bar">
+              <div class="catcher-stat">Score: <strong id="catcherScore">0</strong></div>
+              <div class="catcher-stat">Time Left: <strong id="catcherTimer">20s</strong></div>
+              <button class="btn-game-action" id="startCatcherBtn" onclick="startCatcherGame()">Start Game! 🚀</button>
+            </div>
+
+            <div class="catcher-arena" id="catcherArena">
+              <div class="arena-placeholder" id="arenaPlaceholder">
+                <span>Click "Start Game" and tap floating hearts! 💕</span>
+              </div>
+            </div>
+
+            <div class="game-result-modal hidden" id="catcherResultModal">
+              <div class="modal-box glass-panel">
+                <h4>🏆 Official Certificate Awarded!</h4>
+                <p id="catcherResultText">You caught so much love!</p>
+                <div class="certificate-badge">★ WORLD'S #1 BOYFRIEND ★</div>
+                <button class="btn-primary-glow" onclick="closeCatcherResult()">Sweet! 🥰</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- GAME 3: RELATIONSHIP QUIZ -->
+          <div class="game-view" id="game-quiz">
+            <div class="game-intro-text">
+              <h3>The "How Well Do You Know Us?" Quiz 💑</h3>
+              <p>Answer these 4 cute questions to see if you qualify as the boyfriend of the year!</p>
+            </div>
+
+            <div class="quiz-box" id="quizBox">
+              <div class="quiz-progress-bar">
+                <div class="quiz-progress-fill" id="quizProgressFill" style="width: 25%;"></div>
+              </div>
+              <div class="quiz-question-number" id="quizNumber">Question 1 of 4</div>
+              <h4 class="quiz-question-title" id="quizQuestionTitle">What is your girlfriend's absolute favorite thing about you?</h4>
+
+              <div class="quiz-options-list" id="quizOptionsList">
+                <!-- Dynamically populated via JS -->
+              </div>
+
+              <div class="quiz-feedback-box hidden" id="quizFeedbackBox"></div>
+
+              <button class="btn-game-action hidden" id="quizNextBtn" onclick="nextQuizQuestion()">Next Question →</button>
+            </div>
+
+            <div class="quiz-completed hidden" id="quizCompleted">
+              <div class="quiz-trophy">🏆✨</div>
+              <h3>PERFECT 100% SCORE!</h3>
+              <p>Diagnosis: You are undeniably, irrevocably the best boyfriend on Earth, and your girlfriend is madly in love with you! ❤️</p>
+              <button class="btn-primary-glow" onclick="restartQuiz()">Play Quiz Again 🔁</button>
+            </div>
+          </div>
+
+          <!-- GAME 4: SPIN THE PRIZE WHEEL -->
+          <div class="game-view" id="game-wheel">
+            <div class="game-intro-text">
+              <h3>Spin the Birthday Wheel of Romance! 🎡</h3>
+              <p>Give the wheel a spin to claim your guaranteed birthday prize from your girlfriend!</p>
+            </div>
+
+            <div class="wheel-stage">
+              <div class="wheel-pointer">▼</div>
+              <div class="wheel-canvas-container">
+                <canvas id="wheelCanvas" width="340" height="340"></canvas>
+              </div>
+            </div>
+
+            <div class="wheel-controls">
+              <button class="btn-spin-wheel" id="spinWheelBtn" onclick="spinWheelAction()">
+                🎡 SPIN THE WHEEL!
+              </button>
+            </div>
+
+            <div class="wheel-prize-announcement hidden" id="wheelPrizeBox">
+              <span>🎉 Congratulations Birthday Boy! You Won:</span>
+              <h4 id="wheelPrizeText">A Romantic Dinner on Me!</h4>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: PHOTO REEL & SWEET PROMISES -->
+    <section class="photo-reel-section" id="photoReelSection">
+      <div class="section-container">
+        <div class="center-heading">
+          <span class="section-header-tag">MEMORIES WE TREASURE 📸</span>
+          <h2 class="section-title-large">Every Single Chapter With You Is My Favorite</h2>
+        </div>
+
+        <div class="photo-mosaic-grid">
+          <div class="mosaic-item item-hero">
+            <img src="assets/images/single_birthday_boy.jpg" alt="Birthday Boy">
+            <div class="mosaic-overlay">
+              <span class="mosaic-title">The Star of the Show ⭐</span>
+              <p>Handsome, charming, and mine!</p>
+            </div>
+          </div>
+
+          <div class="mosaic-item">
+            <img src="assets/images/couple_sunglasses.jpg" alt="Cool couple">
+            <div class="mosaic-overlay">
+              <span class="mosaic-title">Unmatched Coolness 😎</span>
+              <p>Matching energies since day one.</p>
+            </div>
+          </div>
+
+          <div class="mosaic-item">
+            <img src="assets/images/couple_sweet_smile.png" alt="Sweet smile">
+            <div class="mosaic-overlay">
+              <span class="mosaic-title">Soft & Pure Love 🤍</span>
+              <p>My safe harbor in every storm.</p>
+            </div>
+          </div>
+
+          <div class="mosaic-item">
+            <img src="assets/images/couple_kissy_glasses.png" alt="Kisses and specs">
+            <div class="mosaic-overlay">
+              <span class="mosaic-title">Sealed With Kisses 💋</span>
+              <p>Forever by your side.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: GRAND FINALE / LOVE LETTER -->
+    <footer class="grand-finale-section" id="finaleSection">
+      <div class="section-container">
+        <div class="finale-letter-card glass-panel">
+          <div class="floating-heart-icon">💖</div>
+          <h2 class="finale-title">Here's To You, My Favorite Person</h2>
+          <div class="finale-body">
+            <p>
+              I hope this little website made you smile as bright as you make me smile every day. You deserve the world, all the happiness, all the success, and all the love there is.
+            </p>
+            <p>
+              Thank you for being the most supportive, funny, patient, and adorable boyfriend. I am so lucky to walk beside you, holding your hand, celebrating another year of your wonderful existence.
+            </p>
+            <p class="finale-wish-bold">
+              Happy Birthday, Baby! Here's to making countless more memories, trips, sweet heartfelt talks, and endless laughs together. 🥂🎂✨
+            </p>
+          </div>
+
+          <div class="signature-block">
+            <span class="signature-tag">With all my love & endless kisses,</span>
+            <span class="signature-handwritten">Your Clingy Girlfriend 💕</span>
+          </div>
+
+          <div class="finale-buttons-row">
+            <button class="btn-primary-glow" onclick="triggerGrandConfettiBlast()">
+              🎉 Blast Celebratory Confetti!
+            </button>
+            <button class="btn-secondary-glass" onclick="scrollToTop()">
+              ⬆️ Back to Top
+            </button>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- POP-UP MODAL FOR REVEALING WISHES & NOTES -->
+  <div class="wish-modal-overlay hidden" id="wishModalOverlay">
+    <div class="wish-modal-card glass-panel" id="wishModalCard">
+      <button class="modal-close-btn" onclick="closeWishModal()">&times;</button>
+      <div class="modal-icon-header" id="modalIcon">💌</div>
+      <div class="modal-badge" id="modalBadge">Special Note</div>
+      <h3 class="modal-title" id="modalTitle">Title Here</h3>
+      <div class="modal-divider"></div>
+      <div class="modal-body" id="modalBody">
+        Content here...
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary-glow" onclick="closeWishModal()">I Love This! 🥰</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
